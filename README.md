@@ -1,6 +1,6 @@
 # Gitlab-Auth-Vault
 
-Etape 0: Paramétrer les variables d'environnement 
+Step 0: Setup environment variables
 
       export VAULT_ADDR=https://vault-cluster-prod-public-vault-fa7b3917.bc6c60bc.z1.hashicorp.cloud:8200
 
@@ -8,35 +8,35 @@ Etape 0: Paramétrer les variables d'environnement
 
       export VAULT_NAMESPACE=admin
 
-Etape 1 : Paramétrer l'application oidc application dans votre Gitlab 
+Step 1 : Setup oidc application in Gitlab 
 
-      Récupérer l'application ID et secret (cf lien vers documentation plus bas)
+      Get the application ID and secret ID (cf documentation's link below)
 
 
-Etape 2 : Activer la méthode authentification oidc sur le namespace voulu à travers l'interface utilisateur ou le CLI
+Step 2 : Activate the oidc authentication on the namespace desired through UI or API/CLI
 
       vault auth enable  oidc
 
-ETape 3 : Paramétrer la configuration oidc
+Step 3 : Setup the oidc configuration
 
        vault write auth/oidc/config \
          oidc_discovery_url="https://gitlab.com" \
-         oidc_client_id="mettre l'application ID généré sur l'application gitlab" \
-         oidc_client_secret="mettre le secret généré sur l'application gitlab" \
+         oidc_client_id="<gitlab application ID>" \
+         oidc_client_secret="<gitlab secret ID>" \
          default_role="demo" \
          bound_issuer="localhost"
   
-  
-L'oidc_discovery_url correspond à l'URL de votre gitlab.
-Ma configuration est rattaché au rôle "demo" que je vais créer dans l'étape suivante
+ 
+The oidc_discovery_url matches your instance gitlab URL.
+My configuration is tied up to the "demo" role that I am going to create in the next step
 
-Etape 4 : Definir un role et y attacher une policy (default) déjà créé dans le namespace admin
+Step 4 : Define a role and attach to it a policy (default), this policy was already created in the namespace admin Vault
 
       vault write auth/oidc/role/demo -<<EOF
       {
        "user_claim": "sub", 
        "allowed_redirect_uris": ["http://localhost:8250/oidc/callback", "https://vault-cluster-prod-public-vault-               fa7b3917.bc6c60bc.z1.hashicorp.cloud:8200/ui/vault/auth/oidc/oidc/callback"], 
-       "bound_audiences": "mettre l'application ID généré sur l'application gitlab",
+       "bound_audiences": "<gitlab application ID>",
        "oidc_scopes": ["openid"],
        "role_type": "oidc", 
        "policies": ["default"],
@@ -45,17 +45,17 @@ Etape 4 : Definir un role et y attacher une policy (default) déjà créé dans 
       }       
    EOF
 
-- allowed_redirect_uris" : la 1ère URL permet de se connecter en local sur un shell, la 2ème permet de se connecter depuis l'UI de Vault
-- Le ttl que vous définissez a un impact sur la validité du token d'authentification qui sera généré lors de l'authentification.
+- allowed_redirect_uris" : The first URL defined allowed to connect to Vault locally in your machine, the second URL allows you to connect through the Web UI.
+- Keep in mind that the TTL you define affects the duration of the authentication token.
 
-- Bound claims correspond aux groupes/projet et sous groupes gitlab que vous aurez créé. Le nom du groupe diffère de celui que vous avez créé (dans mon cas j'ai créé vault mais le claim correspondant est vault20. Vous pouvez le trouver dans les paramètres avancés de votre groupe ou en faisant un appel API avec postman ou autre outil.
+- Bound claims is tied up to gitlab groups/project & subgroups. Pay attention to the name of the group, you can find it in the advanced paramters of gitlab or by makeing an API Call using tool like Postman.
 
 
-Connectez vous sur l'interface utilisateur en mettant le nom du role ou depuis un shell en local :
+You can now connect to the Vault locally in your shell : 
       
       vault login -method=oidc port=8250 role=demo
    
-Autre option: lorsque que vous vous connectez en local, est généré un token que vous pouvez utiliser pour vous connecter depuis l'interface utilisateur sans passer par le role.
+Other option : when you connect to Vault locally, a token is created and this token can be used to connect to Vault through the UI without using the role of the OIDC gitlab provider.
 
-Lien vers la documentation gitlab :
+Gitlab documentation :
    https://docs.gitlab.com/ee/integration/vault.html
