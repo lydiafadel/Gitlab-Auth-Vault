@@ -7,8 +7,8 @@ vault auth enable -namespace=admin/gitlab/ oidc
 
 vault write -namespace=admin/gitlab/ auth/oidc/config \
   oidc_discovery_url="https://gitlab.com" \
-  oidc_client_id="88433f65c17d539ea0e1f0a4acf1f94054a1ec0f67826fee80740e2c031d01d1" \
-  oidc_client_secret="b92c67ff645b779c0552a4d72e7501ed67eb74a06925d0d8c2b470e57f7feff5" \
+  oidc_client_id="<gitlab application ID>" \
+  oidc_client_secret="<gitlab secret ID>" \
   default_role="gitlab" \
   bound_issuer="localhost"
 
@@ -17,7 +17,7 @@ vault write -namespace=admin/gitlab/ auth/oidc/role/gitlab -<<EOF
 {
    "user_claim": "sub",
    "allowed_redirect_uris": ["http://localhost:8250/oidc/callback", "https://vault-cluster-prod-public-vault-fa7b3917.bc6c60bc.z1.hashicorp.cloud:8200/ui/vault/auth/oidc/oidc/callback?namespace=gitlab"], 
-   "bound_audiences": "88433f65c17d539ea0e1f0a4acf1f94054a1ec0f67826fee80740e2c031d01d1",
+   "bound_audiences": "<gitlab application ID>",
    "oidc_scopes": ["openid"],
    "role_type": "oidc", 
    "policies": ["default"],
