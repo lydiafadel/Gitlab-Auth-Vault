@@ -45,10 +45,10 @@ Step 4 : Define a role and attach to it a policy (default), this policy was alre
       }       
    EOF
 
-- allowed_redirect_uris" : The first URL defined allowed to connect to Vault locally in your machine, the second URL allows you to connect through the Web UI.
-- Keep in mind that the TTL you define affects the duration of the authentication token.
+- allowed_redirect_uris" : The first URL allows you to connect to Vault locally in your machine, the second URL allows you to connect through the Web UI.
+- Keep in mind that the TTL you defined affects the duration of the authentication token.
 
-- Bound claims is tied up to gitlab groups/project & subgroups. Pay attention to the name of the group, you can find it in the advanced paramters of gitlab or by makeing an API Call using tool like Postman.
+- Bound claims is tied up to gitlab groups/project & subgroups. Pay attention to the name of the group, you can find it in the advanced parameters of gitlab or by making an API Call using tool like Postman.
 
 
 You can now connect to the Vault locally in your shell : 
