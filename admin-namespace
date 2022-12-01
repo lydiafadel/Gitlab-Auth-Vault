@@ -7,8 +7,8 @@ vault auth enable  oidc
 
 vault write auth/oidc/config \
     oidc_discovery_url="https://gitlab.com" \
-    oidc_client_id="mettre l'application ID généré sur l'application gitlab" \
-    oidc_client_secret="mettre le secret généré sur l'application gitlab" \
+    oidc_client_id="<gitlab application ID>" \
+    oidc_client_secret="<gitlab secret ID>" \
     default_role="demo" \
     bound_issuer="localhost"
   
@@ -17,7 +17,7 @@ vault write auth/oidc/role/demo -<<EOF
 {
    "user_claim": "sub",
    "allowed_redirect_uris": ["http://localhost:8250/oidc/callback", "https://vault-cluster-prod-public-vault-fa7b3917.bc6c60bc.z1.hashicorp.cloud:8200/ui/vault/auth/oidc/oidc/callback"],
-   "bound_audiences": "mettre l'application ID généré sur l'application gitlab",
+   "bound_audiences": "<gitlab application ID>",
    "oidc_scopes": ["openid"],
    "role_type": "oidc", 
    "policies": ["default"],
